@@ -33,15 +33,3 @@ The script initializes and activates the `Morphcia` Conda environment; skips non
 | `--num_cells_expression_filter_cutoff` | `100` |
 | `--mean_expression_filter_cutoff` | `0.001` |
 | `--abs_correlation_cutoff` | `0.2` |
-
-The current active section list contains one section; other IDs are commented out. The `20`/`100` spatial settings here **differ** from the `5`/`30` settings illustrated in the original morphology presentation.
-
-## Portability and reliability
-
-- **Missing dependency:** `morphcia_post_process.py` is called by this shell script but **is not in this repository**. The launcher cannot run standalone and must not be conflated with [`morphcia.py`](../morphcia/morphcia.py).
-- **Paths/environment:** the script uses an original lab mount, relative input paths and a named Conda environment; these must be configured for another system.
-- **Concurrency, not distributed computing:** the script controls local background processes; it is **not** SLURM orchestration, a container scheduler, or an automatic autoscaler.
-- **Observability:** output is redirected into section/donor/receiver-specific log files. The script polls PID existence, **not exit status**; failures require log inspection. It does not provide retries, result validation or resumability.
-- **Robustness opportunities:** adopt explicit exit-code collection, structured per-job manifests, file-safe labeling, resource-aware limits and an HPC/job-array scheduler if scaled further.
-
-This component demonstrates **practical research workflow engineering**: parameterized process dispatch, bounded resource use, reproducible argument propagation, and traceable batch logs in a scientific environment.
