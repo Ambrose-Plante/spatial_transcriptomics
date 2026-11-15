@@ -46,9 +46,3 @@ The `5`/`30` values are **illustrative research-presentation settings**, not har
 The near/far partition defines a spatially meaningful contrast for testing whether a **receiver gene's detection prevalence** differs in a donor cell type's local microenvironment. The accompanying [filtering notebook](../filter_algorithm_morph/) explores organ-stratified differences in metastatic colorectal cancer Xenium sections. See the [WNT5A-fibroblast neighborhood result](../README.md#biological-results-organ-stratified-spatial-associations).
 
 **Boundary of responsibility:** this file implements geometry and cell-index recovery. It imports `proportions_ztest` but **does not run a gene-level z-test, calculate near/far fold changes, apply significance filters, or generate biological heatmaps**. Those belong to the broader exploratory design, not to the three helper functions.
-
-## Scientific-computing skills illustrated
-
-Array-based mapping, occupancy-image representations, mathematical morphology, vectorized binning, index provenance, and balancing geometric accuracy against scalable high-throughput processing.
-
-**Code:** [`fast_morph_scripts.py`](fast_morph_scripts.py). **Imports:** NumPy, pandas, scikit-image, SciPy, statsmodels, matplotlib and other research dependencies as written.
