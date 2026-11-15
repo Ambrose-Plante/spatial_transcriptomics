@@ -33,13 +33,3 @@ The companion methods presentation (`logic_search.pdf`, Part 1) describes this w
 4. **Binary expression mapping:** for each receiver gene `g`, label expression as detected/not detected within each comparison group.
 5. **Group-level statistics:** estimate `P(g>0 | near)` and `P(g>0 | far)`; compute their ratio; the research design describes a **two-proportion z-test**.
 6. **Candidate screening and visualization:** the presentation proposes `p<0.05`, at least 10% expression positivity in a group, and ≥1.5 average fold change across samples, followed by organ-specific heatmaps.
-
-**Implementation provenance:** [`../fast_morph_scripts/fast_morph_scripts.py`](../fast_morph_scripts/fast_morph_scripts.py) directly implements the spatial partition. The full 6.4 MB notebook is a saved exploratory research artifact; the complete notebook has **not been independently executed or line-by-line audited** in this documentation update. Do not interpret every presentation setting or proposed statistical step as verified notebook code.
-
-## Research significance for AI/biotech
-
-The central design choice is **biologically structured feature engineering**: gene expression is analyzed conditional on cell identity, tissue context, and local spatial geometry. This produces **interpretable, testable hypotheses** about microenvironmental associations, including organ-dependent relationships.
-
-The method is complementary to—rather than equivalent to—predictive ML: it discovers structured correlates, not a fitted model or validated causal network. For follow-up studies, important extensions are FDR control, exact-neighbor sensitivity tests, patient/section-level uncertainty, segmentation artifact checks, and independent validation.
-
-**Inputs/reproduction:** original Xenium cell tables and sample metadata are not committed; adapt lab-specific paths and verify spatial units, count thresholds and non-independent cells before re-analysis.
