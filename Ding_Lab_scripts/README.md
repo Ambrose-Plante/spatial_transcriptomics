@@ -58,12 +58,3 @@ A complementary **MorphCIA** presentation example identifies an `AND` combinatio
 **Methods:** spatial feature engineering; raster morphology; nearest-neighbor search (`scipy.spatial.cKDTree`); high-dimensional array operations; stratified prevalence comparisons; hypothesis-driven, interpretable logic-rule enumeration; tissue-specific exploratory analysis.
 
 **Stack:** Python, NumPy, pandas, SciPy, scikit-image, joblib, Jupyter; R, Seurat, BANKSY annotations, data.table; Bash/Conda. This is research software with lab-specific data dependencies rather than a turnkey public benchmark.
-
-## Reproducibility & interpretation
-
-- The original **`logic_search.pdf`** (39-slide methods/design presentation) was supplied separately and is **not included** in this repository. Notebook outputs and slide parameters are not automatically equivalent to current script defaults.
-- Original Xenium/clinical data, lab directory mounts, annotation tables, the CSV→Feather handoff, and the separately referenced `morphcia_post_process.py` are not all provided. The source scripts require configuration and input-schema validation before execution.
-- The illustrative statistical filters are not an end-to-end, multiplicity-corrected validation protocol; the current MorphCIA gate finder uses descriptive prevalence ratios **without p-value filtering**. Neighbor radius, tissue stratification, expression threshold, cell segmentation/doublets and unmeasured confounders can influence results.
-- **Association is not causation.** Spatial proximity and logic-gate enrichment nominate candidate biological relationships for orthogonal validation.
-
-**Portfolio relevance:** the code demonstrates algorithmic problem formulation from biological questions, spatial/data-structure optimization, interpretable discovery over combinatorial feature spaces, and integration of experimental single-cell annotations with computational analyses.
