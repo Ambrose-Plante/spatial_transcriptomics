@@ -1,7 +1,7 @@
 # Seurat to Python data export
 
 ## Purpose
-Exploratory notebook for preparing spatial transcriptomics data from an R/Seurat workflow for downstream Python analysis. The notebook loads a Seurat object saved as a `.qs` file and references a Xenium sample-tracking spreadsheet.
+Workflow for preparing spatial transcriptomics data from an R/Seurat workflow for downstream Python analysis. The notebook loads a Seurat object saved as a `.qs` file and references a Xenium sample-tracking spreadsheet.
 
 ## Inputs and dependencies
 - R packages visible in the notebook include `Seurat`, `tidyverse`, `data.table`, `ggplot2`, `gsheet`, `Matrix`, and `qs`.
