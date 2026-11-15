@@ -12,13 +12,3 @@ This notebook generalizes the previous H&E-only pretraining idea into a paired h
 4. Reconstruct modalities
 5. Calculate reconstruction/alignment losses
 6. Optimize jointly
-
-## Research context
-
-An independent research track, separate from Maximus symbolic music.
-
-## Source and reproducibility
-
-- Python export: `ST_HE_pretraining_idea_2_simple.py` (available in the prepared import package; upload to this project folder pending)
-
-This documentation is based on static analysis of the historical notebook in the supplied 36-page analytical report, not on execution of the Python export. Original datasets, Colab and Drive paths, checkpoints, sound fonts, credentials, or historical dependencies may be needed to run it.
