@@ -1,33 +1,40 @@
-# Seurat-to-Python Xenium cell table export
+# Seurat → Python | Spatial-omics data engineering
 
-## Role in the logic-search project
+**Computational bioinformatics · Cross-language interoperability · Xenium / BANKSY / Seurat**
 
-This **R-language Jupyter notebook** prepares annotated single-cell Xenium data for Python-based spatial proximity and Boolean logic analyses described in `logic_search.pdf`. It is upstream **data preparation**, not the statistical logic-search algorithm itself.
+## Why this component exists
 
-The presentation's two analyses require a per-cell spatial location (`x`/`y`), cell type, section identity, and expression values. This notebook assembles those fields from a Seurat object and metadata files.
+Spatial inference is only meaningful if every cell's **identity, tissue section, coordinates, cell-type label, neighborhood annotation, and expression vector** remain aligned. This R-language Jupyter notebook builds that analysis-ready table from a Xenium Seurat object so downstream Python modules can reason over geometry and cell state.
 
-## Actual notebook workflow
+This is the **ETL and data-contract layer** of the [Ding Lab spatial logic-search project](../README.md), not the statistical test or Boolean classifier itself.
 
-1. Load `Seurat`, `tidyverse`, `data.table`, `ggplot2`, `gsheet`, `Matrix` and `qs`.
-2. Read the Xenium tracking Google Sheet and deserialize a lab-hosted `.qs` Seurat object with `qread()`.
-3. Read **BANKSY neighborhood/cluster** annotations, align by cell ID, and attach them with `AddMetaData()`.
-4. Add **broad cell-type** annotations from a second metadata CSV.
-5. Retrieve each section's image-centroid coordinates from `Seurat_object@images[[section_id]]$centroids`.
-6. For each section, assemble cell IDs, spatial centroids, metadata, BANKSY cluster and expression values. The expression assay is transposed so **rows are cells and columns are genes**.
-7. Write per-section CSV files to `seurat_to_python/<section_id>.csv` using `data.table::fwrite()`; an already existing CSV can be skipped.
+## Computational workflow
 
-The notebook contains another section-export variant later in its cells. Treat the two blocks as historical alternatives, not one validated end-to-end pipeline.
+1. **Load annotated single-cell data:** deserialize a `.qs` Seurat object and read metadata/section-tracking inputs.
+2. **Join neighborhood information:** align external **BANKSY** neighborhood/cluster annotations to Seurat cell identifiers and attach with `AddMetaData()`.
+3. **Resolve biological classes:** join broad cell-type labels for donor/receiver stratification.
+4. **Recover geometry:** extract per-section spatial centroids from `Seurat_object@images[[section_id]]$centroids`.
+5. **Materialize expression features:** extract the selected assay's expression matrix; transpose from **genes × cells** to **cells × genes**.
+6. **Export section-level tables:** combine `cell_id`, `x`/`y` centroids, section metadata, cell-type/BANKSY annotations, and gene columns; write `seurat_to_python/<section>.csv` via `data.table::fwrite()`.
 
-## Outputs and downstream assumptions
+### Downstream data contract
 
-Expected CSV fields include cell identifier, spatial centroid coordinates, metadata (including cell-type annotations), and gene-expression columns. Downstream `morphcia.py` assumes per-section tables can be found in its own configured folder, and it uses **Feather** tables in its main analysis; conversion from exported CSVs to that Feather layout is **not documented as implemented in this notebook**.
+```text
+one row = one cell
+[cell_id | x | y | section/annotation columns | gene_1 | ... | gene_G]
+```
 
-## Requirements and cautions
+The MorphCIA scripts consume annotated spatial cell tables with specific column offsets and category names. **This notebook exports CSVs; it does not implement the later CSV→Feather conversion** assumed by `morphcia.py`.
 
-- R/IRkernel with the packages above, access to original lab-hosted Xenium data and annotation files, and the tracking sheet.
-- Paths in the notebook are lab-specific and need to be replaced before execution.
-- The code densifies expression matrices with `as.matrix()`; this may consume substantial memory.
-- Check centroid, metadata and expression cell-ID alignment. One current numeric-count check tests nonzero counts rather than enforcing equality, so it should not be relied on as validation.
-- Do not share patient-linked metadata or raw clinical sample identifiers without the relevant data governance review.
+## Engineering decisions & trade-offs
 
-**Design context:** `logic_search.pdf`, especially slides 3–9 and 24–31; **code inspected:** `Seurat_to_python.ipynb`.
+- **Cell-ID joins are the invariant:** coordinate rows, metadata rows and assay columns must refer to the same cells in the same order. Rownames, section IDs and `orig.ident` need explicit validation on each dataset.
+- **Per-section partitioning** reduces bookkeeping complexity in multi-tissue studies and permits independent organ-level analyses.
+- **Dense conversion is expensive:** `as.matrix()` can expand sparse transcript counts into a large in-memory matrix. For larger cohorts, chunked or sparse-friendly Arrow/Parquet exports would be advisable; **these optimizations are recommendations, not features claimed here**.
+- The notebook contains **two historical export variants**; they are not a versioned, productionized pipeline. Its current numeric-count check does not reliably enforce equality and should be replaced with an explicit assertion before reuse.
+
+## What this demonstrates
+
+Reproducible handling of single-cell identifiers and annotations; R/Seurat-to-Python interoperation; matrix reorientation; spatial coordinate extraction; and research data engineering for downstream high-dimensional algorithms.
+
+**Source:** [`Seurat_to_python.ipynb`](Seurat_to_python.ipynb). **Dependencies:** R/IRkernel, Seurat, tidyverse, data.table, Matrix, qs, gsheet and lab-hosted source data. Adapt hard-coded paths and respect clinical-data access restrictions.

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="890" viewBox="0 0 900 890" role="img" aria-label="Heatmap of near versus far tumor gene expression detection prevalence ratios in four tissue sites, conditional on proximity to WNT5A fibroblasts">
+<rect width="900" height="890" fill="#ffffff"/>
+<text x="450" y="49" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="25" fill="#182a3c">Spatial association with WNT5A fibroblast proximity</text>
+<text x="450" y="81" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#506577">Tumor gene-detection prevalence ratio: near / far</text>
+<text x="359" y="139" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="#233548">Colon</text>
+<text x="447" y="139" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="#233548">Liver</text>
+<text x="535" y="139" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="#233548">Lung</text>
+<text x="623" y="139" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="#233548">Breast</text>
+<text x="291" y="210" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">MAP4K4</text>
+<rect x="315" y="159" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f49da0"/>
+<text x="359" y="211" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.34</text>
+<rect x="403" y="159" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f7b8ba"/>
+<text x="447" y="211" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.24</text>
+<rect x="491" y="159" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f5a2a5"/>
+<text x="535" y="211" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.32</text>
+<rect x="579" y="159" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f9cbcd"/>
+<text x="623" y="211" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.17</text>
+<text x="291" y="298" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">CFB</text>
+<rect x="315" y="247" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#ef767b"/>
+<text x="359" y="299" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.48</text>
+<rect x="403" y="247" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#fce1e2"/>
+<text x="447" y="299" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.09</text>
+<rect x="491" y="247" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#fbdcdd"/>
+<text x="535" y="299" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.11</text>
+<rect x="579" y="247" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f6b0b2"/>
+<text x="623" y="299" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.27</text>
+<text x="291" y="386" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">PROX1</text>
+<rect x="315" y="335" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f6aaad"/>
+<text x="359" y="387" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.29</text>
+<rect x="403" y="335" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#fbd9da"/>
+<text x="447" y="387" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.12</text>
+<rect x="491" y="335" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#faced0"/>
+<text x="535" y="387" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.16</text>
+<rect x="579" y="335" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f2f3fe"/>
+<text x="623" y="387" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.98</text>
+<text x="291" y="474" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">P4HA1</text>
+<rect x="315" y="423" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#a2aaf5"/>
+<text x="359" y="475" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.78</text>
+<rect x="403" y="423" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#c6cbf9"/>
+<text x="447" y="475" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.87</text>
+<rect x="491" y="423" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#a6aef5"/>
+<text x="535" y="475" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.79</text>
+<rect x="579" y="423" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#f07e83"/>
+<text x="623" y="475" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.45</text>
+<text x="291" y="562" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">ALDOA</text>
+<rect x="315" y="511" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#bac0f8"/>
+<text x="359" y="563" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.84</text>
+<rect x="403" y="511" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#c6cbf9"/>
+<text x="447" y="563" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.87</text>
+<rect x="491" y="511" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#cacef9"/>
+<text x="535" y="563" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.88</text>
+<rect x="579" y="511" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#fef2f2"/>
+<text x="623" y="563" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.03</text>
+<text x="291" y="650" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">TFF3</text>
+<rect x="315" y="599" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#9aa3f4"/>
+<text x="359" y="651" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.76</text>
+<rect x="403" y="599" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#c2c7f8"/>
+<text x="447" y="651" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.86</text>
+<rect x="491" y="599" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#d2d6fa"/>
+<text x="535" y="651" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.90</text>
+<rect x="579" y="599" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#feefef"/>
+<text x="623" y="651" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">1.04</text>
+<text x="291" y="738" text-anchor="end" font-family="Arial,sans-serif" font-size="20" font-weight="600" fill="#223547">CA12</text>
+<rect x="315" y="687" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#bec4f8"/>
+<text x="359" y="739" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.85</text>
+<rect x="403" y="687" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#969ff3"/>
+<text x="447" y="739" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.75</text>
+<rect x="491" y="687" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#e2e4fc"/>
+<text x="535" y="739" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.94</text>
+<rect x="579" y="687" width="88" height="88" stroke="#ffffff" stroke-width="4" fill="#9ea6f4"/>
+<text x="623" y="739" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="600" fill="#203344">0.77</text>
+<rect x="315" y="159" width="352" height="616" fill="none" stroke="#283848" stroke-width="1.5"/>
+<text x="450" y="818" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#53687b">Blue: lower prevalence near donor     ·     Red: higher prevalence near donor</text>
+<text x="450" y="848" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#657a89">Recreated from supplied research notebook result image; display values rounded</text>
+</svg>

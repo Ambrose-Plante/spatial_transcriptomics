@@ -1,56 +1,64 @@
-# MorphCIA — discovering spatial gene/cell-type logic associations
+# MorphCIA | Interpretable Boolean rule mining in spatial tumor microenvironments
 
-## Research objective
+**Algorithmic discovery · Structured feature representations · Combinatorial search · Spatial single-cell biology**
 
-`morphcia.py` addresses the second question in the accompanying `logic_search.pdf` presentation: **“How does [the] donor cell influence [the] receiver cell?”** (slides 23–39). The working hypothesis is that, among receiver cells located near a chosen donor population, the expression status of a **receiver gene** can be associated with the composition and gene expression of the **surrounding cellular neighborhood**.
+## Research question
 
-The objective is **candidate association discovery**, not proof of causal cellular influence. Slide 37 illustrates an AND-rule candidate involving `fibroblast_WNT5A / C1R` and `tumor / IQGAP2`; such findings require independent biological and computational validation.
+Can combinations of **neighboring cell types and expressed genes** help explain why nearby receiver cells differ in the expression of a target gene, such as `PROX1`?
 
-## Implemented algorithm in `morphcia.py`
+[`morphcia.py`](morphcia.py) builds an interpretable spatial feature space and searches for **two-feature Boolean rules** that discriminate **receiver-gene-positive** from **receiver-gene-negative** cells. This is **exploratory rule discovery**, not a trained deep-learning predictor and not evidence of causal intercellular influence.
 
-1. **Select sections:** read `sample_organs.txt`, enumerate section datasets, and optionally restrict to `colon` or `liver` (`all` means all available sections). Some colon/liver section pairs are manually listed in the script.
-2. **Choose cell classes:** select receiver cells (configured as tumor classes) and a donor population (configured as `fibroblast_WNT5A`). Use a `scipy.spatial.cKDTree` to find the nearest donor for each receiver and retain receiver cells within `dist_thresh`.
-3. **Condition on receiver-gene expression:** for each configured receiver gene, split those near-donor receivers into **positive** (expression >0) and **negative** (expression ==0) groups.
-4. **Build environment representations:** for each positive or negative receiver cell, inspect cells of *all recorded cell types* within `dist_thresh`. For every cell-type × gene combination, aggregate expression using the configured `max`, `sum` or `mean`. The resulting arrays are effectively **receiver cell × cell type × gene** matrices, conceptually corresponding to the presentation's “donoractive” / “donorinactive” feature arrays (slides 27–30).
-5. **Pre-filter candidate features:** retain a gene/cell-type feature if it is expressed above zero in **>30%** of at least one of the two receiver groups.
-6. **Record single-feature hits:** the script also requires at least one group's prevalence to be **≥60%**, then computes the larger of positive/negative or negative/positive prevalence ratios, retaining features above `fold_change_threshold`; it saves mean expression among **nonzero** cells as descriptive information.
-7. **Search two-feature Boolean gates:** retain features with **>60%** prevalence in at least one group, enumerate feature pairs, and evaluate `AND`, `OR`, `XOR`, `NAND`, `NOR` and `XNOR` using binary expression status (>0). Evaluate each gate separately in receiver-gene-positive and -negative groups, storing gate name, pair, group prevalences and ratio for hits.
-8. **Save progressively:** serialize one results dictionary per target receiver gene under `gate_results/` as a pickle; keys are `fold_change` and `gate_analysis`.
+## Algorithm and representation
 
-## Important code-versus-presentation distinctions
+**Input:** an annotated spatial cell table per tissue section, with centroids `x,y`, `all_cell_type`, expression columns, and organ/section metadata.
 
-| Topic | Presentation (`logic_search.pdf`) | Current `morphcia.py` |
-| --- | --- | --- |
-| Spatial representation | Illustrates gridded masks, `grid_size = 5`, 30-unit neighborhoods | Uses a **KD-tree** to select near-donor receivers and direct Euclidean distance around each selected receiver; not the grid-mask helper |
-| Organ selector | Slide 24: `check_organ = 'all'` | `check_organ = 'liver'` |
-| Parallelism | Slide 24: `use_parallel=True`, `n_jobs=32` | `use_parallel=False`, `n_jobs=2`, `batch_size=100` |
-| Neighborhood summary | `max`, `sum` or `mean`; slide defaults to `max` | `cell_environment_representation = 'max'` |
-| Minimum prevalence screen | Slide 32: at least 30% in one group | Screen uses **strictly >30%** in one group |
-| Boolean search | Discusses one-, two-, and **three-body** interactions | Implements one-feature summaries and **two-feature** gates; no three-feature gate computation |
-| Contrast direction | Slide 31 proposes a **symmetric** prevalence-ratio maximum | Two-gate hits currently use **positive/negative** direction (`pos_gate / neg_gate`), not symmetric |
-| Statistical tests | Two-proportion z-tests described on slides 9/31 | No statistical p-value calculation is used for the implemented MorphCIA gate hit selection |
-| Proposed expression-level rescue | Slide 33 suggests testing mean-expression ratios for prevalent genes | Code reports conditional mean expression but does **not** implement that fallback criterion for single-feature hits |
+1. **Spatial conditioning with `cKDTree`:** find the nearest donor cell for each receiver; retain receivers within `dist_thresh` of the selected donor type (current donor = `fibroblast_WNT5A`, receiver = tumor classes).
+2. **Supervised contrast definition:** for each target receiver gene `t`, label retained receivers `y_i=1` if `expression_i(t)>0`, otherwise `y_i=0`.
+3. **Neighborhood representation:** for each selected receiver and each cell-type × gene coordinate, aggregate expression from all cells within the receiver-centered radius using `max`, `sum`, or `mean`. The resulting design array has shape **N receiver cells × C neighborhood cell types × G genes**.
+4. **Prevalence-based feature selection:** exclude cell-type/gene combinations absent from both groups at the configured screen (**>30%** positive prevalence in at least one group).
+5. **Single-feature association scan:** for features with ≥60% prevalence in at least one group, compute the larger of `P(feature|y=1)/P(feature|y=0)` and its reverse; retain hits above the fold-change threshold. Nonzero conditional mean expression is saved as descriptive metadata.
+6. **Pairwise symbolic search:** for feature pairs surviving a stricter **>60%** candidate screen, evaluate **AND, OR, XOR, NAND, NOR, XNOR** on binarized neighborhood expression.
+7. **Vectorized scoring and persistence:** evaluate the Boolean gates across positive/negative receiver arrays with NumPy, process pairs in batches (optionally with joblib), and pickle accumulated hits for each target gene.
 
-**Crucial caveat:** In the Boolean pair stage, `(neg_gate == 0)` is marked a hit if prevalence passes the gate minimum, even if positive prevalence is zero. This condition and the one-directional ratio warrant review when interpreting hits; no change to algorithmic behavior has been made in this documentation pass.
+### Search-space structure
 
-## Current configuration and inputs
+If `K` cell-type/gene features survive screening, the two-feature search covers `K(K−1)/2` unordered pairs × **6** logic gates. Binary gate prevalence is the fraction of receiver neighborhoods satisfying a rule; the script records group prevalences and their **positive/negative ratio** for candidate hits. This explicit, inspectable rule space can be interrogated biologically, unlike opaque latent features.
 
-- `BASE_DIR` points to the original Xenium/mCRC lab filesystem.
-- `dist_thresh = 30`, `gene_start_index = 13` and `fold_change_threshold = 1.5`.
-- `receiver_cell_type = 'tumor'`; `donor_cell_type = 'fibroblast_WNT5A'`.
-- `receiver_gene_names = ['MAP4K4', 'CFB', 'PROX1', 'P4HA1', 'ALDOA', 'TFF3', 'CA12']`.
-- Inputs include `sample_organs.txt`, `all_cell_types.pkl`, per-section `morphcia/seurat_to_python/*.csv` discovery paths and corresponding `.feather` tables under a `feathers` directory.
-- Uses NumPy, pandas, SciPy, scikit-image, tqdm, joblib and other imports. Several libraries are only imported, not necessarily used.
-- The script assumes a fixed **5,083-gene** layout and uses expression columns beginning at position 13, so input schemas must match.
+Current source configuration includes `dist_thresh=30`, `fold_change_threshold=1.5`, `cell_environment_representation='max'`, `check_organ='liver'`, `batch_size=100`, `n_jobs=2`, and `use_parallel=False`. These are **script defaults, not universal analysis settings**.
 
-## Interpretation and improvements
+## Biological example: cross-organ Boolean association
 
-Slide 37 shows a proposed AND gate: `fibroblast_WNT5A / C1R` AND `tumor / IQGAP2`, with positive/negative prevalences **0.6885 / 0.4044 (ratio 1.7023)** in colon and **0.6061 / 0.4036 (ratio 1.5016)** in liver. These are presentation examples, **not reproduced results from running the present script**.
+The accompanying methods presentation reports a candidate **AND** rule:
 
-Slides 38–39 recommend sweeping gene-expression thresholds (rather than testing only >0), searching distance thresholds, comparing neighborhood aggregation methods and negative-population definitions, constraining rules to include the donor type, and addressing segmentation/spatial-doublet artifacts, temporal discordance, and upregulated versus downregulated targets.
+```text
+(fibroblast_WNT5A expresses C1R) AND (tumor neighborhood expresses IQGAP2)
+```
 
-### Running
+| Tumor tissue | Target-positive group | Target-negative group | Prevalence ratio |
+| --- | ---: | ---: | ---: |
+| Colon | 0.6885 | 0.4044 | **1.7023×** |
+| Liver | 0.6061 | 0.4036 | **1.5016×** |
 
-This is research code with top-level file reads and loops, not a portable CLI. Configure all absolute/relative paths, install dependencies, create the destination output directory and validate cell-type and gene dimensions before running. The PDF and code refer to the same design but **do not represent an identical fixed configuration**.
+These presentation examples illustrate a **potentially conserved, interpretable multicellular neighborhood association**. They are **not fresh results reproduced by executing the present source tree** and should not be described as validated signaling or as predictive-model accuracy.
 
-**Sources:** `logic_search.pdf`, slides 23–39; `morphcia.py`, inspected directly.
+## Core engineering details
+
+- **Data structures:** `scipy.spatial.cKDTree` for initial donor proximity; NumPy arrays for downstream receiver-centered neighborhood tensors and Boolean evaluation. The later receiver-neighborhood aggregation uses direct distance scans rather than a second KD-tree query.
+- **Search optimization:** prevalence gating reduces combinatorial candidates; `itertools.combinations` constructs unordered feature pairs; vectorized Boolean operations process batches of pairs; optional `joblib.Parallel` dispatch is implemented but **disabled by default**.
+- **Output contract:** one pickle dictionary under `gate_results/`, with `fold_change` (single-feature descriptors) and `gate_analysis` (gate type, gene/cell-type pair, positive and negative prevalence, ratio) per receiver target gene.
+- **Targets in current configuration:** `MAP4K4`, `CFB`, `PROX1`, `P4HA1`, `ALDOA`, `TFF3`, `CA12`. The source assumes **5,083 expression features** and `gene_start_index=13` in its data schema.
+
+## Current implementation boundaries
+
+| Concern | What the source actually does |
+| --- | --- |
+| Inferential significance | **No p-value, permutation test, held-out prediction, or multiple-testing correction** in current gate hit selection |
+| Logic-rule depth | Searches **two-feature** gates; the presentation proposes but this script does **not** implement three-feature combinations |
+| Gate contrast | Uses **positive/negative prevalence** for Boolean gates; unlike the single-feature scan, the pairwise selection is not symmetric |
+| Zero denominators | A zero negative-group prevalence can be considered a hit if the gate-level prevalence screen passes; review such infinite/undefined ratios carefully |
+| Biological data | Expects `sample_organs.txt`, `all_cell_types.pkl`, CSV-discovered section IDs and corresponding Feather cell tables at original lab-specific paths |
+| Deployment | Top-level research script, not packaged CLI. It requires original data, matching column order/cell-class labels, output directories and dependencies |
+
+The methodological contribution is a **biologically constrained, interpretable combinatorial feature-search workflow** across heterogeneous cellular neighborhoods. Follow-up validation should test distance radii, expression thresholds, independent tissue sections/patients, feature dependency, and segmentation or spatial-doublet artifacts.
+
+**Methods context:** [parent project overview](../README.md); the original `logic_search.pdf` is supplied separately, not committed.

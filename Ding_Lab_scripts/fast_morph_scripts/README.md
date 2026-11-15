@@ -1,42 +1,54 @@
-# Fast morphology-based donor/receiver proximity helpers
+# Fast spatial morphology | Donor–receiver proximity indexing
 
-## Purpose and scientific question
+**Algorithm design · Geometric feature engineering · Vectorized scientific Python**
 
-Functions in [`fast_morph_scripts.py`](fast_morph_scripts.py) implement the **spatial masking stage** of *Part One: What in the receiver cell is influenced by the donor cell?* in `logic_search.pdf` (slides 2–10).
+## Research problem
 
-The key idea is to compare receiver cells close to a donor-cell type with those outside a predefined donor neighborhood, using gridded occupancy masks and **binary morphological dilation**. This is a *proximity classifier*, not itself an expression-test or causal-inference method.
+How can millions of spatial **cell–gene observations** be stratified efficiently by their location relative to a biologically defined donor population?
 
-## How the code works
+[`fast_morph_scripts.py`](fast_morph_scripts.py) supplies the geometric building blocks for **near-versus-far receiver-cell comparisons**. Rather than computing a full donor-by-receiver pairwise-distance matrix, it rasterizes cell centroids and uses **binary morphological dilation** to build a discretized donor-neighborhood mask.
 
-1. **`vectorized_grid_mapping(receiver_cells, donor_cells, grid_size)`**: builds shared `x_values`/`y_values` grid coordinates from the spatial extent of both groups, bins each cell centroid with `np.searchsorted()`, and creates separate binary donor/receiver occupancy masks. It also retains each receiver's original row index.
-2. **`get_indices_inside_mask(mask, receiver_indices)`**: converts occupied mask pixels back into the original receiver table indices.
-3. **`vectorized_split_cells_morph(receiver_cells, donor_cells, grid_size, distance_threshold)`**: computes a disk radius of approximately `round(distance_threshold / grid_size)` pixels, dilates the donor mask using `skimage.morphology.binary_dilation`, and intersects it with the receiver mask. Receiver indices falling in the dilated donor mask become `cells_in`; those outside become `cells_out`.
+## Implemented functions
 
-Illustrative presentation settings: `grid_size = 5` and `distance_threshold = 30` (in compatible coordinate units); these are **presentation values**, not hard-coded defaults in these functions.
+| Function | Algorithm / output |
+| --- | --- |
+| `vectorized_grid_mapping(receiver_cells, donor_cells, grid_size)` | Determines shared spatial extents; bins `x, y` using `np.searchsorted`; returns donor/receiver occupancy matrices and per-cell bin/row-index mappings |
+| `get_indices_inside_mask(mask, receiver_indices)` | Maps occupied receiver bins back to **all original receiver rows**, preserving multiple cells that fall in the same grid bin |
+| `vectorized_split_cells_morph(receiver_cells, donor_cells, grid_size, distance_threshold)` | Dilates donor occupancy by a disk with pixel radius `round(distance_threshold / grid_size)`, intersects with receiver occupancy, and returns **near/far row-index lists** |
 
-## Example usage
+### Algorithmic idea
+
+```text
+donor centroids  ──► 2-D occupancy grid ──► disk dilation ──┐
+                                                             ├─► receiver indices: near / far
+receiver centroids ─► 2-D occupancy grid ──► mask intersect ──┘
+```
+
+This is a **grid-based approximation to a distance query**. By representing a spatial neighborhood as a binary mask, selection becomes image morphology plus index lookup. Memory depends on grid extent/resolution; fine grids, crowded bins and radius rounding affect geometry and accuracy.
+
+## Python example
 
 ```python
 from fast_morph_scripts import vectorized_split_cells_morph
 
-# donor_cells and receiver_cells are pandas DataFrames with numeric x, y columns
-cells_in, cells_out = vectorized_split_cells_morph(
+# pandas DataFrames with numeric x and y columns in the same coordinate frame
+near_idx, far_idx = vectorized_split_cells_morph(
     receiver_cells, donor_cells, grid_size=5, distance_threshold=30
 )
-near_receivers = receiver_cells.iloc[cells_in]
-far_receivers = receiver_cells.iloc[cells_out]
+near_receivers = receiver_cells.iloc[near_idx]
+far_receivers  = receiver_cells.iloc[far_idx]
 ```
 
-The script defines functions only; importing it does not launch a standalone analysis.
+The `5`/`30` values are **illustrative research-presentation settings**, not hard-coded library defaults. Validate coordinate units and occupancy behavior against exact Euclidean or KD-tree queries when precision is important.
 
-## Downstream analysis in the PDF — not implemented in this helper
+## Why this matters biologically
 
-For each receiver gene, the presentation proposes binary presence/absence scoring among near versus far receiver grids; compute `p_inside` and `p_outside`, fold change `p_inside / p_outside`, and a **two-proportion z-test**; then filter on `p < 0.05`, at least **10%** positivity and average fold change **≥ 1.5** across samples (slides 8–11).
+The near/far partition defines a spatially meaningful contrast for testing whether a **receiver gene's detection prevalence** differs in a donor cell type's local microenvironment. The accompanying [filtering notebook](../filter_algorithm_morph/) explores organ-stratified differences in metastatic colorectal cancer Xenium sections. See the [WNT5A-fibroblast neighborhood result](../README.md#biological-results-organ-stratified-spatial-associations).
 
-The helper returns cell indexes but **does not compute those expression summaries, tests, filters, or heatmaps**.
+**Boundary of responsibility:** this file implements geometry and cell-index recovery. It imports `proportions_ztest` but **does not run a gene-level z-test, calculate near/far fold changes, apply significance filters, or generate biological heatmaps**. Those belong to the broader exploratory design, not to the three helper functions.
 
-## Dependencies and limitations
+## Scientific-computing skills illustrated
 
-`numpy`, `pandas`, `scikit-image` and the other libraries imported in the source (including `scipy`, `matplotlib`, `statsmodels`, and `tqdm`) are required for the file as written. Gridding is an approximation: cell collisions in the same bin, grid resolution, edge clipping and disk-radius rounding can affect classifications. Validate coordinate units and results against direct Euclidean-distance calculations if exact-neighbor assignment matters.
+Array-based mapping, occupancy-image representations, mathematical morphology, vectorized binning, index provenance, and balancing geometric accuracy against scalable high-throughput processing.
 
-**Design reference:** `logic_search.pdf`, slides 3–11. **Implementation reference:** `fast_morph_scripts.py`.
+**Code:** [`fast_morph_scripts.py`](fast_morph_scripts.py). **Imports:** NumPy, pandas, scikit-image, SciPy, statsmodels, matplotlib and other research dependencies as written.
