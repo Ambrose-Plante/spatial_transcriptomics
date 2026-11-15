@@ -12,13 +12,3 @@ This notebook explores representation learning for spatial transcriptomics using
 4. Fuse location
 5. Decode image
 6. Minimize reconstruction MSE
-
-## Research context
-
-An independent research track, separate from Maximus symbolic music.
-
-## Source and reproducibility
-
-- Python export: `ST_HE_pretraining_idea_1.py` (available in the prepared import package; upload to this project folder pending)
-
-This documentation is based on static analysis of the historical notebook in the supplied 36-page analytical report, not on execution of the Python export. Original datasets, Colab and Drive paths, checkpoints, sound fonts, credentials, or historical dependencies may be needed to run it.
