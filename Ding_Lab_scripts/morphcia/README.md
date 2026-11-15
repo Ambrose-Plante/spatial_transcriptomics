@@ -58,7 +58,3 @@ These presentation examples illustrate a **potentially conserved, interpretable 
 | Zero denominators | A zero negative-group prevalence can be considered a hit if the gate-level prevalence screen passes; review such infinite/undefined ratios carefully |
 | Biological data | Expects `sample_organs.txt`, `all_cell_types.pkl`, CSV-discovered section IDs and corresponding Feather cell tables at original lab-specific paths |
 | Deployment | Top-level research script, not packaged CLI. It requires original data, matching column order/cell-class labels, output directories and dependencies |
-
-The methodological contribution is a **biologically constrained, interpretable combinatorial feature-search workflow** across heterogeneous cellular neighborhoods. Follow-up validation should test distance radii, expression thresholds, independent tissue sections/patients, feature dependency, and segmentation or spatial-doublet artifacts.
-
-**Methods context:** [parent project overview](../README.md); the original `logic_search.pdf` is supplied separately, not committed.
