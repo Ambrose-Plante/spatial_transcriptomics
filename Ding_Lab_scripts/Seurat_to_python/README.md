@@ -13,6 +13,3 @@ Exploratory notebook for preparing spatial transcriptomics data from an R/Seurat
 2. Read sample metadata from the Xenium tracking sheet.
 3. Load the serialized Seurat object.
 4. Inspect and prepare spatial cell metadata for downstream processing.
-
-## Reproducibility
-This is a historical research notebook, not a self-contained export package. Inspect the full notebook and configure data paths and dependencies before running it.
